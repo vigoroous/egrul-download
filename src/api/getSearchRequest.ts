@@ -1,4 +1,5 @@
 import axios from "axios";
+import logger from "../config/logger";
 
 type CompanyType = {
     a: string; //'115088, ГОРОД МОСКВА, УГРЕШСКАЯ УЛИЦА, ДОМ 2, СТРОЕНИЕ 25, КОМНАТА 26',
@@ -22,10 +23,32 @@ type SearchResponse = {
 };
 
 export const getSearchRequest = async (token: string) => {
-    const timestamp = Date.now();
+    try {
+        const timestamp = Date.now();
 
-    return await axios<SearchResponse>({
-        method: "get",
-        url: `https://egrul.nalog.ru/search-result/${token}?r=${timestamp}&_=${timestamp}`,
-    });
+        const res = await axios<SearchResponse>({
+            method: "get",
+            url: `https://egrul.nalog.ru/search-result/${token}?r=${timestamp}&_=${timestamp}`,
+        });
+
+        logger.info({
+            context: "getSearchRequest",
+            params: {
+                token,
+            },
+            message: res.data
+        });
+
+        return res.data;
+    } catch (e) {
+        logger.error({
+            context: "getSearchRequest",
+            params: {
+                token,
+            },
+            message: e
+        });
+
+        return null;
+    }
 }

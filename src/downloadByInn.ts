@@ -7,48 +7,29 @@ import { delay } from "./utils";
 
 export const downloadByInn = async (inn: string) => {
     const innRes = await postInnRequest(inn);
+    if (!innRes) return false;
 
-    if (innRes.status !== 200) {
-        console.log("innRequest fault");
-        return;
-    }
+    const searchRes = await getSearchRequest(innRes.t);
+    if (!searchRes) return false;
+    const fileHash = searchRes.rows[0].t;
 
-    console.log(innRes.data);
+    const vypRes = await getVypRequest(fileHash);
+    if (!vypRes) return false;
 
-    const searchRes = await getSearchRequest(innRes.data.t);
 
-    if (searchRes.status !== 200) {
-        console.log("searchRequest fault");
-        return;
-    }
-
-    console.log(searchRes.data);
-
-    const vypRes = await getVypRequest(searchRes.data.rows[0].t);
-
-    if (vypRes.status !== 200) {
-        console.log("vypRequest fault");
-        return;
-    }
-
-    console.log(vypRes.data);
-
-    let status: "wait" | "ready" = "wait";
+    let status: "wait" | "ready" | undefined;
 
     while (status !== "ready") {
-        const vypStatusRes = await getVypStatusRequest(searchRes.data.rows[0].t);
+        const vypStatusRes = await getVypStatusRequest(fileHash);
+        if(!vypStatusRes) return false;
 
-        if (vypStatusRes.status !== 200) {
-            console.log("vypStatusRequest fault");
-            return;
-        }
-
-        status = vypStatusRes.data.status;
-        console.log(status);
+        status = vypStatusRes.status;
         await delay(300);
     }
 
-    await getVypDownloadRequest(searchRes.data.rows[0].t);
+    await getVypDownloadRequest(fileHash);
 
     console.log("OK");
+
+    return true;
 }
