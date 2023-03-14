@@ -21,13 +21,14 @@ export const downloadByInn = async (inn: string) => {
 
     while (status !== "ready") {
         const vypStatusRes = await getVypStatusRequest(fileHash);
-        if(!vypStatusRes) return false;
+        if (!vypStatusRes) return false;
 
         status = vypStatusRes.status;
         await delay(300);
     }
 
-    await getVypDownloadRequest(fileHash);
+    const fileName = searchRes.rows[0].c.replace(/[" ]/g, "_") + inn + ".pdf";
+    await getVypDownloadRequest(fileHash, fileName);
 
     console.log("OK");
 

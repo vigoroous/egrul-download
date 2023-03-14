@@ -6,7 +6,7 @@ import pretty from "pino-pretty";
 import dayjs from 'dayjs';
 import { LOG_DIR } from "./env";
 
-const logPath = path.normalize(`${LOG_DIR}/${dayjs().format().replace(/:/g, "_")}.log`)
+const logPath = path.normalize(`${LOG_DIR}/${dayjs().format().replace(/[:+]/g, "_")}.log`)
 
 fs.mkdir(LOG_DIR, { recursive: true }, (err) => {
     if (err) throw err;

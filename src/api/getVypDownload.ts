@@ -10,9 +10,9 @@ import logger from "../config/logger";
 
 
 
-export const getVypDownloadRequest = async (token: string) => {
+export const getVypDownloadRequest = async (token: string, fileName: string) => {
     if (!fs.existsSync(DOWNLOAD_DIR)) fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
-    const downloadFilePath = path.resolve(DOWNLOAD_DIR, token + ".pdf");
+    const downloadFilePath = path.resolve(DOWNLOAD_DIR, fileName);
     const writer = fs.createWriteStream(downloadFilePath);
 
     try {
