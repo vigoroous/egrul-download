@@ -1,0 +1,37 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Company {
+    id      Int             @id @default(autoincrement())
+    inn     String          @unique
+    status  Int             @default(0)
+    details CompanyDetails?
+}
+
+model CompanyDetails {
+    id         Int     @id @default(autoincrement())
+    a          String?
+    c          String?
+    e          String?
+    g          String?
+    cnt        String?
+    i          String?
+    k          String?
+    n          String?
+    o          String?
+    p          String?
+    r          String?
+    t          String?
+    pg         String?
+    tot        String?
+    // company   Company @relation(fields: [companyId], references: [id])
+    // companyId Int     @unique
+    company    Company @relation(fields: [companyInn], references: [inn])
+    companyInn String  @unique
+}
