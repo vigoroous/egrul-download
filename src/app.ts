@@ -1,42 +1,28 @@
 import { chunk } from "lodash";
-import { getUnhandledCompanies } from "./handlers/companyHandler";
+import { getUnhandledCompanies, upsertCompany } from "./handlers/companyHandler";
 import { downloadHandler } from "./handlers/downloadHandler";
-import { delay, findByName, readAllLines, toFindDuplicates, writeLines } from "./utils";
-
-// const innArray = [
-//     "9723011265",
-//     "9731001077",
-//     "6015006694",
-//     "7720783693",
-//     "7720777097",
-// ];
-
+import { delay, readAllLines } from "./utils";
 
 
 const main = async () => {
-    // const innArray = readAllLines("input.txt");
+    const inputInnArr = readAllLines("input.txt");
 
-    // const groups = chunk(innArray, 20);
-
-    // for (const group of groups) {
-    //     await downloadHandler(group);
-    //     await delay(2000);
-    // }
-
+    for (const inn of inputInnArr) {
+        await upsertCompany(inn);
+    }
 
     const unhandledCompanies = await getUnhandledCompanies();
     if (!unhandledCompanies) return;
 
-    const groups2 = chunk(unhandledCompanies.map((v) => v.inn), 20);
+    const preparedInnArr = chunk(unhandledCompanies.map((v) => v.inn), 20);
 
-    for (const [index, group] of groups2.entries()) {
+    for (const [index, group] of preparedInnArr.entries()) {
         await downloadHandler(group);
-        if (index === groups2.length - 1) {
+        if (index === preparedInnArr.length - 1) {
             break;
         }
         await delay(30000);
     }
-
 
 }
 

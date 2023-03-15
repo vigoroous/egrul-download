@@ -83,6 +83,33 @@ export const updateCompanyStatus = async (params: UpdateCompanyStatusType) => {
     }
 }
 
+type BulkUpdateCompanyStatusType = {
+    innArr: string[],
+    status: CompanyStatus,
+}
+
+export const bulkUpdateCompanyStatus = async (params: BulkUpdateCompanyStatusType) => {
+    try {
+        const res = await prisma.company.updateMany({
+            where: { inn: { in: params.innArr } },
+            data: { status: params.status },
+        })
+        logger.info({
+            context: "updateCompanyStatus",
+            params,
+            message: res
+        });
+        return res;
+    } catch (e) {
+        logger.error({
+            context: "updateCompanyStatus",
+            params,
+            message: e
+        });
+        return null;
+    }
+}
+
 export const deleteCompany = async (inn: string) => {
     try {
         const res = await prisma.company.delete({
@@ -124,6 +151,27 @@ export const getUnhandledCompanies = async () => {
     } catch (e) {
         logger.error({
             context: "getUnhandledCompanies",
+            message: e,
+        });
+        return null;
+    }
+}
+
+export const upsertCompany = async (inn: string) => {
+    try {
+        const res = await prisma.company.upsert({
+            where: { inn: inn },
+            update: {},
+            create: { inn: inn },
+        });
+        logger.info({
+            context: "upsertCompany",
+            message: res,
+        });
+        return res;
+    } catch (e) {
+        logger.error({
+            context: "upsertCompany",
             message: e,
         });
         return null;

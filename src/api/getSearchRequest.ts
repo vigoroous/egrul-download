@@ -19,7 +19,7 @@ type CompanyType = {
 };
 
 type SearchResponse = {
-    rows: Array<CompanyType>;
+    rows?: Array<CompanyType>;
 };
 
 export const getSearchRequest = async (token: string) => {
