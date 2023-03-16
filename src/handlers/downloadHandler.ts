@@ -9,8 +9,9 @@ import { upsertCompanyDetails } from "./companyDetailsHandler";
 import { bulkUpdateCompanyStatus, CompanyStatus, updateCompanyStatus } from "./companyHandler";
 
 
-export const downloadHandler = async (innArr: string[]): Promise<boolean> => {
+export const downloadHandler = async (innArr: string[], wait?: number): Promise<boolean> => {
 
+    if (!!wait) await delay(wait);
     const innRequest = innArr.join(" ");
     const innRes = await postInnRequest(innRequest);
     if (!innRes) {
@@ -18,6 +19,7 @@ export const downloadHandler = async (innArr: string[]): Promise<boolean> => {
         return false;
     };
 
+    if (!!wait) await delay(wait);
     const searchRes = await getSearchRequest(innRes.t);
     if (!searchRes || !searchRes.rows) {
         await bulkUpdateCompanyStatus({ innArr: innArr, status: CompanyStatus.ERROR });
@@ -35,18 +37,22 @@ export const downloadHandler = async (innArr: string[]): Promise<boolean> => {
 
         await upsertCompanyDetails({ ...companyDetails, companyInn: companyInn });
 
+        if (!!wait) await delay(wait);
         const vypRes = await getVypRequest(fileHash);
         if (!vypRes) {
             await updateCompanyStatus({ inn: companyInn, status: CompanyStatus.ERROR });
             continue;
         }
 
+        if (!!wait) await delay(wait);
         const vypStatus = await enshureVypStatus(fileHash);
         if (!vypStatus) {
             await updateCompanyStatus({ inn: companyInn, status: CompanyStatus.ERROR });
             continue;
         };
 
+
+        if (!!wait) await delay(wait);
         const companyName = companyDetails.c ?? companyDetails.n ?? "undefined";
         const fileName = companyName.replace(/[" ]/g, "_") + `_${companyInn}.pdf`;
         await getVypDownloadRequest(fileHash, fileName);

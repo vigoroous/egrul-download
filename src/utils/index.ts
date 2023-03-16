@@ -1,6 +1,7 @@
 import fs from "fs";
 import { readdir } from 'fs/promises';
 import path from 'path';
+import { writeXLSX, readFile as readFileXlsx } from "xlsx";
 
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -36,3 +37,18 @@ export const findByName = async (dir: string, name: string) => {
 };
 
 export const toFindDuplicates = (arr: any[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
+
+export const readColumnXlsx = (fileName: string, columnName: string) => {
+    const workbook = readFileXlsx(fileName);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    const column = [];
+
+    for (let z in worksheet) {
+        if (z.toString()[0] === columnName) {
+            column.push(worksheet[z].v);
+        }
+    }
+
+    return column;
+}
