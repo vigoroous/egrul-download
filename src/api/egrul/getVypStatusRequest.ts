@@ -1,22 +1,21 @@
 import axios from "axios";
-import logger from "../config/logger";
+import logger from "../../config/logger";
 
-type VypResponse = {
-    t: string;
-    captchaRequired: boolean;
+type VypStatusResponse = {
+    status: "wait" | "ready";
 };
 
-export const getVypRequest = async (token: string) => {
+export const getVypStatusRequest = async (token: string) => {
     try {
         const timestamp = Date.now();
 
-        const res = await axios<VypResponse>({
+        const res = await axios<VypStatusResponse>({
             method: "get",
-            url: `https://egrul.nalog.ru/vyp-request/${token}?r=&_=${timestamp}`,
+            url: `https://egrul.nalog.ru/vyp-status/${token}?r=${timestamp}&_=${timestamp}`,
         });
 
         logger.info({
-            context: "getVypRequest",
+            context: "getVypStatusRequest",
             params: {
                 token,
             },
@@ -26,7 +25,7 @@ export const getVypRequest = async (token: string) => {
         return res.data;
     } catch (e) {
         logger.error({
-            context: "getVypRequest",
+            context: "getVypStatusRequest",
             params: {
                 token,
             },
@@ -35,4 +34,4 @@ export const getVypRequest = async (token: string) => {
 
         return null;
     }
-};
+}

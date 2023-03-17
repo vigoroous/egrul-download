@@ -1,5 +1,5 @@
 import axios from "axios";
-import logger from "../config/logger";
+import logger from "../../config/logger";
 
 type CompanyType = {
     a: string; //'115088, ГОРОД МОСКВА, УГРЕШСКАЯ УЛИЦА, ДОМ 2, СТРОЕНИЕ 25, КОМНАТА 26',
@@ -18,7 +18,7 @@ type CompanyType = {
     tot: string; //'1'
 };
 
-type SearchResponse = {
+export type SearchResponse = {
     rows?: Array<CompanyType>;
 };
 

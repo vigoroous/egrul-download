@@ -8,30 +8,39 @@ datasource db {
 }
 
 model Company {
-    id      Int             @id @default(autoincrement())
-    inn     String          @unique
-    status  Int             @default(0)
-    details CompanyDetails?
+    id                Int          @id @default(autoincrement())
+    inn               String       @unique
+    // egrulStatus Int          @default(0)
+    isEgrulProcessed  Boolean      @default(false)
+    isDadataProcessed Boolean      @default(false)
+    egrul         Egrul[]
+    dadata        Dadata[]
 }
 
-model CompanyDetails {
+model Egrul {
+    id           Int     @id @default(autoincrement())
+    a            String? @map("address")
+    c            String? @map("short_name")
+    n            String? @map("full_name")
+    g            String? @map("manager")
+    k            String? @map("company_type")
+    r            String? @map("registration_date")
+    e            String? @map("liquidation_date")
+    cnt          String? @map("count")
+    i            String? @map("inn")
+    o            String? @map("ogrn")
+    p            String? @map("kpp")
+    t            String? @map("token")
+    pg           String? @map("page")
+    tot          String? @map("total")
+    isDownloaded Boolean @default(false)
+    company      Company @relation(fields: [companyInn], references: [inn], onDelete: Cascade)
+    companyInn   String
+}
+
+model Dadata {
     id         Int     @id @default(autoincrement())
-    a          String?
-    c          String?
-    e          String?
-    g          String?
-    cnt        String?
-    i          String?
-    k          String?
-    n          String?
-    o          String?
-    p          String?
-    r          String?
-    t          String?
-    pg         String?
-    tot        String?
-    // company   Company @relation(fields: [companyId], references: [id])
-    // companyId Int     @unique
-    company    Company @relation(fields: [companyInn], references: [inn])
-    companyInn String  @unique
+    suggestion String
+    company    Company @relation(fields: [companyInn], references: [inn], onDelete: Cascade)
+    companyInn String
 }

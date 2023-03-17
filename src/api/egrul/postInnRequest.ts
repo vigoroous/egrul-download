@@ -1,18 +1,19 @@
 import axios from "axios";
-import logger from "../config/logger";
+import logger from "../../config/logger";
 
 type InnResponse = {
     t: string;
     captchaRequired: boolean;
 };
 
-export const postInnRequest = async (inn: string) => {
+export const postInnRequest = async (query: string, page?: number) => {
     try {
         const res = await axios<InnResponse>({
             method: "post",
             url: "https://egrul.nalog.ru",
             data: new URLSearchParams({
-                query: inn,
+                query: query,
+                page: page ? page.toString() : "",
             }),
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
@@ -20,7 +21,8 @@ export const postInnRequest = async (inn: string) => {
         logger.info({
             context: "postInnRequest",
             params: {
-                inn,
+                query,
+                page,
             },
             message: res.data
         });
@@ -31,7 +33,8 @@ export const postInnRequest = async (inn: string) => {
         logger.error({
             context: "postInnRequest",
             params: {
-                inn,
+                query,
+                page,
             },
             message: e
         });

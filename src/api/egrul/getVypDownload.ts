@@ -4,8 +4,8 @@ import { Stream } from "stream";
 import path from 'path';
 import fs from 'fs';
 
-import { DOWNLOAD_DIR } from "../config/env";
-import logger from "../config/logger";
+import { DOWNLOAD_DIR } from "../../config/env";
+import logger from "../../config/logger";
 
 
 
