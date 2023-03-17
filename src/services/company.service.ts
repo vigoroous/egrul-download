@@ -76,17 +76,17 @@ export class CompanyService {
         }
     }
 
-    static async bulkUpdateCompanyDadataStatus(
-        params: BulkUpdateCompanyDadataStatusType
+    static async updateCompanyDadataStatus(
+        params: UpdateCompanyDadataStatusType
     ) {
         try {
-            const res = await prisma.company.updateMany({
-                where: { inn: { in: params.innArr } },
+            const res = await prisma.company.update({
+                where: { inn: params.inn },
                 data: { isDadataProcessed: params.isDadataProcessed },
             })
             logger.info({
                 service: "CompanyService",
-                method: "bulkUpdateCompanyStatus",
+                method: "updateCompanyDadataStatus",
                 params,
                 message: res
             });
@@ -94,7 +94,7 @@ export class CompanyService {
         } catch (e) {
             logger.error({
                 service: "CompanyService",
-                method: "bulkUpdateCompanyStatus",
+                method: "updateCompanyDadataStatus",
                 params,
                 message: e
             });
@@ -198,7 +198,7 @@ type BulkUpdateCompanyEgrulStatusType = {
     isEgrulProcessed: boolean;
 }
 
-type BulkUpdateCompanyDadataStatusType = {
-    innArr: string[];
+type UpdateCompanyDadataStatusType = {
+    inn: string;
     isDadataProcessed: boolean;
 }

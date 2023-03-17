@@ -42,7 +42,7 @@ export const readColumnXlsx = (fileName: string, columnName: string) => {
     const workbook = readFileXlsx(fileName);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    const column = [];
+    const column: string[] = [];
 
     for (let z in worksheet) {
         if (z.toString()[0] === columnName) {

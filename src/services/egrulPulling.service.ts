@@ -9,6 +9,8 @@ import { delay } from "../utils";
 import { EgrulService } from "./egrul.service";
 
 
+// TODO: restart failed download without creating new Egrul dump
+
 export class EgrulPullingService {
 
     static async egrulSearch(innArr: string[], wait?: number, page = 1) {
@@ -36,11 +38,9 @@ export class EgrulPullingService {
         });
 
         return { total, page } as const;
-
     }
 
     static async egrulDownload (searchRes: SearchResponse, wait?: number) {
-
 
         for (const row of searchRes.rows!) {
             const companyInn = row.i;
@@ -61,7 +61,7 @@ export class EgrulPullingService {
             }
     
             if (!!wait) await delay(wait);
-            const vypStatus = await this.enshureVypStatus(fileHash);
+            const vypStatus = await this.enshureVypStatus(fileHash, wait);
             if (!vypStatus) {
                 continue;
             };
@@ -75,19 +75,19 @@ export class EgrulPullingService {
                 id: egrulData.id,
                 isDownloaded: true,
             });
-    
         }
-    
     }
     
-    static async enshureVypStatus (fileHash: string) {
+    static async enshureVypStatus (fileHash: string, wait?: number) {
         for (; ;) {
             const vypStatusRes = await getVypStatusRequest(fileHash);
             if (!vypStatusRes) return false;
             if (vypStatusRes.status === 'ready') return true;
     
-            await delay(300);
+            if (!!wait) await delay(wait);
         }
     }
+
+
 }
 

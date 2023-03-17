@@ -8,13 +8,12 @@ datasource db {
 }
 
 model Company {
-    id                Int          @id @default(autoincrement())
-    inn               String       @unique
-    // egrulStatus Int          @default(0)
-    isEgrulProcessed  Boolean      @default(false)
-    isDadataProcessed Boolean      @default(false)
-    egrul         Egrul[]
-    dadata        Dadata[]
+    id                Int      @id @default(autoincrement())
+    inn               String   @unique
+    isEgrulProcessed  Boolean  @default(false)
+    isDadataProcessed Boolean  @default(false)
+    egrul             Egrul[]
+    dadata            Dadata[]
 }
 
 model Egrul {

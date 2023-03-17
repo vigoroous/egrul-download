@@ -1,11 +1,12 @@
 import axios from "axios";
+import { DADATA_API_KEY } from "../../config/env";
 import logger from "../../config/logger";
 
 type BranchType = "MAIN" | "BRANCH";
 type OrgStatus = "ACTIVE" | "LIQUIDATING" | "LIQUIDATED" | "BANKRUPT" | "REORGANIZING";
 type OrgType = "LEGAL" | "INDIVIDUAL";
 
-type OrganizationInfo = {
+type Suggestion = {
     value: string;
     unrestricted_value: string;
     data: {
@@ -30,7 +31,7 @@ type OrganizationInfo = {
             status: OrgStatus;
             actuality_date: Date;
             registration_date: Date;
-            liquidation_date: null;
+            liquidation_date?: Date;
         };
         opf: {
             type: string;
@@ -71,26 +72,26 @@ type OrganizationInfo = {
 };
 
 type SuggestionsResponse = {
-    suggestions: Array<OrganizationInfo>;
+    suggestions: Array<Suggestion>;
 }
 
-export const postSuggestions = async (inn: string) => {
+export const postSuggestions = async (query: string) => {
     try {
         const res = await axios<SuggestionsResponse>({
             method: "post",
             url: "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party",
-            data: new URLSearchParams({
-                query: inn,
-            }),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            data: { query: query },
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": "Token " + DADATA_API_KEY,
+            },
         });
 
         logger.info({
             context: "postSuggestions",
-            params: {
-                inn,
-            },
-            message: res.data
+            params: { query },
+            message: res.status
         });
 
         return res.data;
@@ -98,9 +99,7 @@ export const postSuggestions = async (inn: string) => {
     } catch (e) {
         logger.error({
             context: "postSuggestions",
-            params: {
-                inn,
-            },
+            params: { query },
             message: e
         });
 
