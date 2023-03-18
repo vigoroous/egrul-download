@@ -17,7 +17,6 @@ model Company {
 }
 
 model Egrul {
-    id           Int     @id @default(autoincrement())
     a            String? @map("address")
     c            String? @map("short_name")
     n            String? @map("full_name")
@@ -26,20 +25,27 @@ model Egrul {
     r            String? @map("registration_date")
     e            String? @map("liquidation_date")
     cnt          String? @map("count")
-    i            String? @map("inn")
-    o            String? @map("ogrn")
+    i            String  @map("inn")
+    o            String  @map("ogrn")
     p            String? @map("kpp")
     t            String? @map("token")
     pg           String? @map("page")
     tot          String? @map("total")
-    isDownloaded Boolean @default(false)
-    company      Company @relation(fields: [companyInn], references: [inn], onDelete: Cascade)
-    companyInn   String
+    isDownloaded Boolean @default(false) @map("is_downloaded")
+    company      Company @relation(fields: [i], references: [inn], onDelete: Cascade)
+
+    @@id([i, o])
 }
 
 model Dadata {
-    id         Int     @id @default(autoincrement())
-    suggestion String
-    company    Company @relation(fields: [companyInn], references: [inn], onDelete: Cascade)
-    companyInn String
+    shortName        String    @map("short_name")
+    inn              String
+    ogrn             String
+    status           String
+    registrationDate DateTime  @map("registration_date")
+    liquidationDate  DateTime? @map("liquidation_date")
+    suggestion       String
+    company          Company   @relation(fields: [inn], references: [inn], onDelete: Cascade)
+
+    @@id([inn, ogrn])
 }
