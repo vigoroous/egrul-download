@@ -4,6 +4,7 @@ import { CompanyService } from "./services/company.service";
 import { delay, readAllLines, readColumnXlsx } from "./utils";
 import { EgrulPullingService } from "./services/egrulPulling.service";
 import { DadataPullingService } from "./services/dadataPulling.service";
+import { EgrulService } from "./services/egrul.service";
 
 
 const perPage = 20;
@@ -24,14 +25,14 @@ const main = async () => {
 
 
     for (let i = 0; i < preparedInnArr.length; i++) {
-        const res = await EgrulPullingService.egrulSearch(preparedInnArr[i], 300, 1);
+        const res = await EgrulPullingService.egrulDownload(preparedInnArr[i], 300, 1);
 
         if (!res) continue;
 
         const totalPages = Math.ceil(res.total / perPage);
         if (totalPages > 1) {
             for (let page = 2; page < totalPages; page++) {
-                await EgrulPullingService.egrulSearch(preparedInnArr[i], 300, page);
+                await EgrulPullingService.egrulDownload(preparedInnArr[i], 300, page);
             }
         }
     }
@@ -41,6 +42,25 @@ const main = async () => {
 
     for (const { inn } of unhandledDadataCompanys) {
         await DadataPullingService.getSuggestionsByInn(inn);
+    }
+
+    const notDownloadedEgrul = await EgrulService.getNotDownloadedEgrul();
+    if (!notDownloadedEgrul) return;
+
+    const preparedInnOgrnArr = chunk(notDownloadedEgrul.map((v) => `${v.i} ${v.o}`), perPage);
+
+    for (const item of preparedInnOgrnArr) {
+
+        const res = await EgrulPullingService.egrulRetryDownload(item, 300, 1);
+
+        if (!res) continue;
+
+        const totalPages = Math.ceil(res.total / perPage);
+        if (totalPages > 1) {
+            for (let page = 2; page < totalPages; page++) {
+                await EgrulPullingService.egrulRetryDownload(item, 300, page);
+            }
+        }
     }
 
 }

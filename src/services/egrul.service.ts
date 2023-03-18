@@ -4,16 +4,19 @@ import { prisma } from "../config/prisma";
 
 export class EgrulService {
 
-    static async getEgrul(companyInn: string) {
+    static async getEgrulByInnOgrn(params: GetEgrulByInnOgrn) {
         try {
             const res = await prisma.egrul.findMany({
-                where: { companyInn: companyInn },
+                where: {
+                    companyInn: params.inn,
+                    o: params.ogrn
+                },
             });
 
             logger.info({
                 service: "EgrulService",
                 method: "getEgrul",
-                params: { companyInn },
+                params,
                 message: res
             });
             return res;
@@ -21,7 +24,29 @@ export class EgrulService {
             logger.error({
                 service: "EgrulService",
                 method: "getEgrul",
-                params: { companyInn },
+                params,
+                message: e
+            });
+            return null;
+        }
+    }
+
+    static async getNotDownloadedEgrul() {
+        try {
+            const res = await prisma.egrul.findMany({
+                where: { isDownloaded: false },
+            });
+
+            logger.info({
+                service: "EgrulService",
+                method: "getNotDownloadedEgrul",
+                message: res
+            });
+            return res;
+        } catch (e) {
+            logger.error({
+                service: "EgrulService",
+                method: "getNotDownloadedEgrul",
                 message: e
             });
             return null;
@@ -79,6 +104,12 @@ export class EgrulService {
 }
 
 type UpdateEgrulIsDownloadedType = {
-    id: number,
-    isDownloaded: boolean
+    id: number;
+    isDownloaded: boolean;
+}
+
+
+type GetEgrulByInnOgrn = {
+    inn: string;
+    ogrn: string;
 }
