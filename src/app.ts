@@ -21,18 +21,23 @@ const main = async () => {
     const unhandledEgrulCompanys = await CompanyService.getUnhandledEgrulCompanys();
     if (!unhandledEgrulCompanys) return;
 
-    const preparedInnArr = chunk(unhandledEgrulCompanys.map((v) => v.inn), perPage);
+    const egrulNotDownloaded = await EgrulService.getEgrulNotDownloaded();
+    if (!egrulNotDownloaded) return;
 
+    const innArr = egrulNotDownloaded.map((v) => `${v.i} ${v.o}`)
+        .concat(unhandledEgrulCompanys.map((v) => v.inn));
 
-    for (let i = 0; i < preparedInnArr.length; i++) {
-        const res = await EgrulPullingService.egrulDownload(preparedInnArr[i], 300, 1);
+    const preparedInnArr = chunk(innArr, perPage);
+
+    for (const item of preparedInnArr) {
+        const res = await EgrulPullingService.egrulDownload(item, 300, 1);
 
         if (!res) continue;
 
         const totalPages = Math.ceil(res.total / perPage);
         if (totalPages > 1) {
             for (let page = 2; page < totalPages; page++) {
-                await EgrulPullingService.egrulDownload(preparedInnArr[i], 300, page);
+                await EgrulPullingService.egrulDownload(item, 300, page);
             }
         }
     }
@@ -42,25 +47,6 @@ const main = async () => {
 
     for (const { inn } of unhandledDadataCompanys) {
         await DadataPullingService.getSuggestionsByInn(inn);
-    }
-
-    const notDownloadedEgrul = await EgrulService.getNotDownloadedEgrul();
-    if (!notDownloadedEgrul) return;
-
-    const preparedInnOgrnArr = chunk(notDownloadedEgrul.map((v) => `${v.i} ${v.o}`), perPage);
-
-    for (const item of preparedInnOgrnArr) {
-
-        const res = await EgrulPullingService.egrulRetryDownload(item, 300, 1);
-
-        if (!res) continue;
-
-        const totalPages = Math.ceil(res.total / perPage);
-        if (totalPages > 1) {
-            for (let page = 2; page < totalPages; page++) {
-                await EgrulPullingService.egrulRetryDownload(item, 300, page);
-            }
-        }
     }
 
 }

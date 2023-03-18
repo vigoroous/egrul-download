@@ -6,16 +6,13 @@ export class EgrulService {
 
     static async getEgrulByInnOgrn(params: GetEgrulByInnOgrn) {
         try {
-            const res = await prisma.egrul.findMany({
-                where: {
-                    companyInn: params.inn,
-                    o: params.ogrn
-                },
+            const res = await prisma.egrul.findUnique({
+                where: { i_o: { i: params.inn, o: params.ogrn } },
             });
 
             logger.info({
                 service: "EgrulService",
-                method: "getEgrul",
+                method: "getEgrulByInnOgrn",
                 params,
                 message: res
             });
@@ -23,7 +20,7 @@ export class EgrulService {
         } catch (e) {
             logger.error({
                 service: "EgrulService",
-                method: "getEgrul",
+                method: "getEgrulByInnOgrn",
                 params,
                 message: e
             });
@@ -31,7 +28,7 @@ export class EgrulService {
         }
     }
 
-    static async getNotDownloadedEgrul() {
+    static async getEgrulNotDownloaded() {
         try {
             const res = await prisma.egrul.findMany({
                 where: { isDownloaded: false },
@@ -39,14 +36,14 @@ export class EgrulService {
 
             logger.info({
                 service: "EgrulService",
-                method: "getNotDownloadedEgrul",
+                method: "getEgrulNotDownloaded",
                 message: res
             });
             return res;
         } catch (e) {
             logger.error({
                 service: "EgrulService",
-                method: "getNotDownloadedEgrul",
+                method: "getEgrulNotDownloaded",
                 message: e
             });
             return null;
@@ -54,14 +51,16 @@ export class EgrulService {
     }
 
 
-    static async createEgrul(params: Omit<Egrul, "id" | "isDownloaded">) {
+    static async upsertEgrul(params: Omit<Egrul, "isDownloaded">) {
         try {
-            const res = await prisma.egrul.create({
-                data: params
+            const res = await prisma.egrul.upsert({
+                where: { i_o: { i: params.i, o: params.o } },
+                update: params,
+                create: params,
             })
             logger.info({
                 service: "EgrulService",
-                method: "createEgrul",
+                method: "upsertEgrul",
                 params,
                 message: res
             });
@@ -69,7 +68,7 @@ export class EgrulService {
         } catch (e) {
             logger.error({
                 service: "EgrulService",
-                method: "createEgrul",
+                method: "upsertEgrul",
                 params,
                 message: e
             });
@@ -80,7 +79,7 @@ export class EgrulService {
     static async updateEgrulIsDownloaded(params: UpdateEgrulIsDownloadedType) {
         try {
             const res = await prisma.egrul.update({
-                where: { id: params.id },
+                where: { i_o: { i: params.inn, o: params.ogrn } },
                 data: { isDownloaded: params.isDownloaded }
             });
 
@@ -104,7 +103,8 @@ export class EgrulService {
 }
 
 type UpdateEgrulIsDownloadedType = {
-    id: number;
+    inn: string;
+    ogrn: string;
     isDownloaded: boolean;
 }
 

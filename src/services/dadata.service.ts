@@ -4,47 +4,49 @@ import { prisma } from "../config/prisma";
 
 export class DadataService {
 
-    static async getDadata(companyInn: string) {
+    // static async getDadata(companyInn: string) {
+    //     try {
+    //         const res = await prisma.dadata.findUnique({
+    //             where: { inn_ogrn: {inn: } },
+    //         });
+
+    //         logger.info({
+    //             service: "DadataService",
+    //             method: "getDadata",
+    //             params: { companyInn },
+    //             message: !!res
+    //         });
+    //         return res;
+    //     } catch (e) {
+    //         logger.error({
+    //             service: "DadataService",
+    //             method: "getDadata",
+    //             params: { companyInn },
+    //             message: e
+    //         });
+    //         return null;
+    //     }
+    // }
+
+
+    static async upsertDadata(params: Dadata) {
         try {
-            const res = await prisma.dadata.findMany({
-                where: { companyInn: companyInn },
-            });
-
-            logger.info({
-                service: "DadataService",
-                method: "getDadata",
-                params: { companyInn },
-                message: !!res
-            });
-            return res;
-        } catch (e) {
-            logger.error({
-                service: "DadataService",
-                method: "getDadata",
-                params: { companyInn },
-                message: e
-            });
-            return null;
-        }
-    }
-
-
-    static async createDadata(params: Omit<Dadata, "id">) {
-        try {
-            const res = await prisma.dadata.create({
-                data: params
+            const res = await prisma.dadata.upsert({
+                where: { i_ogrn: { i: params.i, ogrn: params.ogrn } },
+                update: params,
+                create: params,
             })
             logger.info({
                 service: "DadataService",
-                method: "createDadata",
+                method: "upsertDadata",
                 params,
-                message: !!res
+                message: res
             });
             return res;
         } catch (e) {
             logger.error({
                 service: "DadataService",
-                method: "createDadata",
+                method: "upsertDadata",
                 params,
                 message: e
             });
@@ -52,5 +54,5 @@ export class DadataService {
         }
     }
 
-    
+
 }

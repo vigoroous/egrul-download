@@ -29,9 +29,9 @@ type Suggestion = {
         type: OrgType;
         state: {
             status: OrgStatus;
-            actuality_date: Date;
-            registration_date: Date;
-            liquidation_date?: Date;
+            actuality_date: number;
+            registration_date: number;
+            liquidation_date?: number;
         };
         opf: {
             type: string;
@@ -65,7 +65,7 @@ type Suggestion = {
         };
         phones: null;
         emails: null;
-        ogrn_date: Date;
+        ogrn_date: number;
         okved_type: string;
         employee_count: null;
     };
