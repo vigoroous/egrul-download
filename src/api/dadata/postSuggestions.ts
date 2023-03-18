@@ -3,8 +3,16 @@ import { DADATA_API_KEY } from "../../config/env";
 import logger from "../../config/logger";
 
 type BranchType = "MAIN" | "BRANCH";
-type OrgStatus = "ACTIVE" | "LIQUIDATING" | "LIQUIDATED" | "BANKRUPT" | "REORGANIZING";
+export type OrgStatus = "ACTIVE" | "LIQUIDATING" | "LIQUIDATED" | "BANKRUPT" | "REORGANIZING";
 type OrgType = "LEGAL" | "INDIVIDUAL";
+
+export const OrgStatusDescription : Record<OrgStatus, string> = {
+    ACTIVE: "Действующая",
+    BANKRUPT: "Признано несостоятельным (банкротом)",
+    LIQUIDATED: "Ликвидирована",
+    LIQUIDATING: "Находится в стадии ликвидации",
+    REORGANIZING: "Находится в процессе реорганизации в форме присоединения к другому юрлицу"
+};
 
 type Suggestion = {
     value: string;

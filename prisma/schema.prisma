@@ -38,14 +38,14 @@ model Egrul {
 }
 
 model Dadata {
-    shortName        String    @map("short_name")
-    i                String    @map("inn")
-    ogrn             String
-    status           String
-    registrationDate DateTime  @map("registration_date")
-    liquidationDate  DateTime? @map("liquidation_date")
+    name              String
+    inn               String
+    ogrn              String
+    status            String
+    registrationDate  DateTime  @map("registration_date")
+    liquidationDate   DateTime? @map("liquidation_date")
     // suggestion       String
-    company          Company   @relation(fields: [i], references: [inn], onDelete: Cascade)
+    company           Company   @relation(fields: [inn], references: [inn], onDelete: Cascade)
 
-    @@id([i, ogrn])
+    @@id([inn, ogrn])
 }

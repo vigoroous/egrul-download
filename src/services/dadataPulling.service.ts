@@ -1,4 +1,4 @@
-import { postSuggestions } from "../api/dadata/postSuggestions";
+import { OrgStatusDescription, postSuggestions } from "../api/dadata/postSuggestions";
 import { CompanyService } from "./company.service";
 import { DadataService } from "./dadata.service";
 
@@ -15,14 +15,14 @@ export class DadataPullingService {
                 || suggestion.data.type === "INDIVIDUAL"
             ) {
                 await DadataService.upsertDadata({
-                    i: suggestion.data.inn,
+                    inn: suggestion.data.inn,
                     ogrn: suggestion.data.ogrn,
-                    shortName: suggestion.data.name.short_with_opf,
+                    name: suggestion.value,
+                    status: suggestion.data.state.status,
                     registrationDate: new Date(suggestion.data.state.registration_date),
                     liquidationDate: suggestion.data.state.liquidation_date ?
                         new Date(suggestion.data.state.liquidation_date) :
                         null,
-                    status: suggestion.data.state.status,
                     // suggestion: JSON.stringify(suggestion),
                 });
             }

@@ -3,6 +3,32 @@ import { prisma } from "../config/prisma";
 
 export class CompanyService {
 
+    static async getAllCompanySummary() {
+        try {
+            const res = await prisma.company.findMany({
+                select: { 
+                    _count: { select: { dadata: true } },
+                    dadata: true,
+                    inn: true,
+                 },
+            });
+
+            logger.info({
+                service: "CompanyService",
+                method: "getAllCompanySummary",
+                message: res
+            });
+            return res;
+        } catch (e) {
+            logger.error({
+                service: "CompanyService",
+                method: "getAllCompanySummary",
+                message: e
+            });
+            return null;
+        }
+    }
+
     static async getCompanyByInn(inn: string) {
         try {
             const res = await prisma.company.findUnique({
