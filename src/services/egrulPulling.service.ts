@@ -18,15 +18,11 @@ export class EgrulPullingService {
         if (wait) await delay(wait);
         const innRequest = innArr.join(" ");
         const innRes = await postInnRequest(innRequest, page);
-        if (!innRes) {
-            return;
-        };
+        if (!innRes) return;
 
         if (wait) await delay(wait);
         const searchRes = await getSearchRequest(innRes.t);
-        if (!searchRes || !searchRes.rows) {
-            return;
-        }
+        if (!searchRes || !searchRes.rows) return;
 
         for (const row of searchRes.rows!) {
 
@@ -41,8 +37,6 @@ export class EgrulPullingService {
             const vypStatus = await this.enshureVypStatus(row.t, wait);
             if (!vypStatus) continue;
 
-
-
             if (wait) await delay(wait);
             const companyName = row.c ?? row.n ?? "undefined";
             const fileName = companyName.replace(/[" ]/g, "_") + `_${row.i}_${row.o}.pdf`;
@@ -56,7 +50,7 @@ export class EgrulPullingService {
         }
 
         await CompanyService.bulkUpdateCompanyEgrulStatus({
-            innArr: innArr,
+            innArr: searchRes.rows.map(({ i }) => i),
             isEgrulProcessed: true,
         });
 

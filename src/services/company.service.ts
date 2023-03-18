@@ -125,42 +125,42 @@ export class CompanyService {
         }
     }
 
-    static async getUnhandledEgrulCompanys() {
+    static async getCompanysUnhandledEgrul() {
         try {
             const res = await prisma.company.findMany({
                 where: { isEgrulProcessed: false },
             });
             logger.info({
                 service: "CompanyService",
-                method: "getUnhandledCompanys",
+                method: "getCompanysUnhandledEgrul",
                 message: res,
             });
             return res;
         } catch (e) {
             logger.error({
                 service: "CompanyService",
-                method: "getUnhandledCompanys",
+                method: "getCompanysUnhandledEgrul",
                 message: e,
             });
             return null;
         }
     }
 
-    static async getUnhandledDadataCompanys() {
+    static async getCompanysUnhandledDadata() {
         try {
             const res = await prisma.company.findMany({
                 where: { isDadataProcessed: false },
             });
             logger.info({
                 service: "CompanyService",
-                method: "getUnhandledCompanys",
+                method: "getCompanysUnhandledDadata",
                 message: res,
             });
             return res;
         } catch (e) {
             logger.error({
                 service: "CompanyService",
-                method: "getUnhandledCompanys",
+                method: "getCompanysUnhandledDadata",
                 message: e,
             });
             return null;

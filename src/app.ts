@@ -18,7 +18,7 @@ const main = async () => {
         await CompanyService.upsertCompany(inn);
     }
 
-    const unhandledEgrulCompanys = await CompanyService.getUnhandledEgrulCompanys();
+    const unhandledEgrulCompanys = await CompanyService.getCompanysUnhandledEgrul();
     if (!unhandledEgrulCompanys) return;
 
     const egrulNotDownloaded = await EgrulService.getEgrulNotDownloaded();
@@ -34,15 +34,15 @@ const main = async () => {
 
         if (!res) continue;
 
-        const totalPages = Math.ceil(res.total / perPage);
-        if (totalPages > 1) {
-            for (let page = 2; page < totalPages; page++) {
+        const pagesCount = Math.ceil(res.total / perPage);
+        if (pagesCount > 1) {
+            for (let page = 2; page <= pagesCount; page++) {
                 await EgrulPullingService.egrulDownload(item, 300, page);
             }
         }
     }
 
-    const unhandledDadataCompanys = await CompanyService.getUnhandledDadataCompanys();
+    const unhandledDadataCompanys = await CompanyService.getCompanysUnhandledDadata();
     if (!unhandledDadataCompanys) return;
 
     for (const { inn } of unhandledDadataCompanys) {
