@@ -11,9 +11,10 @@ const options = {
 
 const main = async () => {
     const { createReport, useDadata, useEgrul, useInput } = options;
+    let invalidInnArr: string[] = [];
 
     if (useInput) {
-        await runInput({
+        invalidInnArr = await runInput({
             file: { name: "data/Untitled.xlsx", colName: "B" },
             type: "xlsx"
         });
@@ -21,7 +22,7 @@ const main = async () => {
 
     if (useDadata) await runDadata();
 
-    if (createReport) await createReportXslx();
+    if (createReport) await createReportXslx({ invalidInnArr });
 
     if (useEgrul) await runEgrul({ wait: 300, perPage: 20 });
 

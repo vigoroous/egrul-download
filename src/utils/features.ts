@@ -41,12 +41,17 @@ export const runInput = async ({ file, type }: RunInputType) => {
     }
 
     const preparedInnArr = inputArr.flatMap(line => line.split(/[ ;]/g));
+    const invalidInnArr: string[] = [];
 
     for (const inn of preparedInnArr) {
         if (checkINN(inn)) {
             await CompanyService.upsertCompany(inn);
+        } else {
+            invalidInnArr.push(inn);
         }
     }
+
+    return invalidInnArr;
 }
 
 

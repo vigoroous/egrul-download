@@ -1,5 +1,6 @@
 import fs from "fs";
 import { readdir } from 'fs/promises';
+import { chunk } from "lodash";
 import path from 'path';
 import XLSX from "xlsx";
 import { OrgStatus, OrgStatusDescription } from "../api/dadata/postSuggestions";
@@ -55,7 +56,7 @@ export const readColumnXlsx = (fileName: string, columnName: string) => {
     return column;
 }
 
-export const createReportXslx = async () => {
+export const createReportXslx = async ({ invalidInnArr }: { invalidInnArr: string[] }) => {
     const companyArr = await CompanyService.getAllCompanySummary();
     if (!companyArr) return;
 
@@ -87,6 +88,9 @@ export const createReportXslx = async () => {
     const worksheet = XLSX.utils.json_to_sheet(resultRows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
+
+    const worksheet_error = XLSX.utils.aoa_to_sheet(chunk(invalidInnArr, 1));
+    XLSX.utils.book_append_sheet(workbook, worksheet_error, "Errors");
 
     /* fix headers */
     XLSX.utils.sheet_add_aoa(worksheet, [[
