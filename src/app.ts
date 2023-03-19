@@ -3,10 +3,10 @@ import { runDadata, runEgrul, runInput } from "./utils/features";
 
 
 const options = {
-    useInput: true,
-    useEgrul: false,
-    useDadata: true,
-    createReport: true,
+    useInput: true,     // Считать входные данные из экселя или txt
+    useEgrul: false,    // Скачать выписки
+    useDadata: true,    // Использовать бобра
+    createReport: true, // Сформировать отчет
 }
 
 const main = async () => {
