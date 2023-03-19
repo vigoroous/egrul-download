@@ -377,6 +377,11 @@ real-require@^0.2.0:
   resolved "https://registry.yarnpkg.com/real-require/-/real-require-0.2.0.tgz#209632dea1810be2ae063a6ac084fee7e33fba78"
   integrity sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==
 
+ru-validation-codes@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/ru-validation-codes/-/ru-validation-codes-2.9.0.tgz#bc059b79dfec3f3baccc705a8a4704f4d016b6b0"
+  integrity sha512-hYgBkzvExFsQ4iYYpk2gKvsz/s1UtSv04d0uAl+cb0kvHCyA89GezcHkPVLuvUGtWaOaR2d9oDyHGkx9bxDd6w==
+
 safe-buffer@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
