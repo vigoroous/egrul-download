@@ -27,13 +27,10 @@ export class DadataPullingService {
                 });
             }
         }
-
-        if (suggestionsRes.suggestions.length > 0) {
-            await CompanyService.updateCompanyDadataStatus({
-                inn: inn,
-                isDadataProcessed: true,
-            });
-        }
+        await CompanyService.updateCompanyDadataStatus({
+            inn: inn,
+            isDadataProcessed: true,
+        });
     }
 
 }
